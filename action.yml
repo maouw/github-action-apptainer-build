@@ -27,8 +27,9 @@ runs:
       - name: Install Apptainer
         shell: bash
         run: |
-          set -e -o pipefail -x
+          set -eEx -o pipefail
           download_url="${{inputs.apptainer_download_url}}"
+          release_arch="${{inputs.apptainer_arch}}"
           if [ -z "${download_url:-}" ]; then
             [ -z "${release_arch:-}" ] && release_arch="$(dpkg --print-architecture)"
             releases_url="https://api.github.com/repos/apptainer/apptainer/releases/tags/${{inputs.apptainer_release_tag}}"
