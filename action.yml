@@ -52,4 +52,4 @@ runs:
           sudo apt-get clean --yes --quiet
           sudo rm -rf /var/lib/apt/lists/*
 
-          printf "Installed "; apptainer --versversionion
+          printf "Installed "; apptainer --version
