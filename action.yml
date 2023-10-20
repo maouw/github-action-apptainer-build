@@ -27,7 +27,7 @@ runs:
       - name: Install Apptainer
         shell: bash
         run: |
-          set -euo pipefail
+          set -e -o pipefail -x
           download_url="${{inputs.apptainer_download_url}}"
           if [ -z "${download_url:-}" ]; then
             [ -z "${release_arch:-}" ] && release_arch="$(dpkg --print-architecture)"
