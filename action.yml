@@ -14,6 +14,11 @@ on:
         required: false
         type: string
         description: "The architecture of Apptainer to install"
+      apptainer_release_tag:
+        required: false
+        type: string
+        description: "The release tag of Apptainer to install"
+        default: "latest"
 
 jobs:
   install_apptainer:
@@ -24,25 +29,28 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          release_arch="${${{ github.event.inputs.apptainer_arch}}:-$(dpkg --print-architecture)}"
-          download_url="${${{ github.event.inputs.apptainer_download_url }}:-}"
-          if [ -z "${download_url:-}" ]; then
-            release_tag="${v${{ github.event.inputs.apptainer_version }}:-latest}"
-            releases_url="${https://api.github.com/repos/apptainer/apptainer/releases/tags/${release_tag}"
+          [ -z "${release_arch:=${{ github.event.inputs.apptainer_arch }}}" ] && release_arch="$(dpkg --print-architecture)"
+
+          if [ -z "${download_url:=${{ github.event.inputs.apptainer_download_url }}}}" ]; then
+            releases_url="${https://api.github.com/repos/apptainer/apptainer/releases/tags/${{ github.event.inputs.apptainer_release_tag }}"
             download_url="$(curl -ssL "${releases_url}" | grep -o -m1 'https://github[.]com.*download[/].*apptainer_.*${release_arch}.deb')"
           fi
-          if [ -z "${download_url:-}" ]; then
-              echo "Unable to determine download URL for Apptainer"
-              exit 1
-          fi
+
+          [ -z "${download_url:-}" ] && { echo "Unable to determine download URL for Apptainer"; exit 1; }
+
           echo "Downloading Apptainer from ${download_url}"
           curl -sSL -o apptainer.deb "${download_url}"
+
           echo "Updating apt cache"
           sudo apt-get update --yes --quiet
+
           echo "Installing Apptainer"
           sudo dpkg --install --force-depends apptainer.deb
           sudo apt-get install --fix-broken --yes --quiet
+
+          echo "Cleaning up"
           rm -f apptainer.deb
           sudo apt-get clean --yes --quiet
           sudo rm -rf /var/lib/apt/lists/*
+          
           printf "Installed "; apptainer --version
