@@ -5,21 +5,16 @@ inputs:
     type: string
     description: "The download URL for the Apptainer package"
     default: ""
-  apptainer_version:
-    required: false
-    type: string
-    description: "The version of Apptainer to install"
-    default: ""
   apptainer_arch:
     required: false
     type: string
     default: ""
     description: "The architecture of Apptainer to install"
-  apptainer_release_tag:
+  apptainer_release:
     required: false
     type: string
     description: "The release tag of Apptainer to install"
-    default: "latest"
+    default: ""
 
 runs:
     using: composite
@@ -32,7 +27,9 @@ runs:
           release_arch="${{inputs.apptainer_arch}}"
           if [ -z "${download_url:-}" ]; then
             [ -z "${release_arch:-}" ] && release_arch="$(dpkg --print-architecture)"
-            releases_url="https://api.github.com/repos/apptainer/apptainer/releases/tags/${{inputs.apptainer_release_tag}}"
+            release_index=latest
+            [ -n "${{inputs.apptainer_release:-}}" ] && release_index="tags/${{inputs.apptainer_release:-}}"
+            releases_url="https://api.github.com/repos/apptainer/apptainer/releases/${release_index}"
             download_url="$(curl -ssL "${releases_url}" | grep -o -m1 'https://github[.]com.*download[/].*apptainer_.*'"${release_arch:-}"'.deb')"
           fi
 
