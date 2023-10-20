@@ -1,31 +1,28 @@
 name: "Install Apptainer"
-on:
-  workflow_call:
-    inputs:
-      apptainer_download_url:
-        required: false
-        type: string
-        description: "The download URL for the Apptainer package"
-        default: ""
-      apptainer_version:
-        required: false
-        type: string
-        description: "The version of Apptainer to install"
-        default: ""
-      apptainer_arch:
-        required: false
-        type: string
-        default: ""
-        description: "The architecture of Apptainer to install"
-      apptainer_release_tag:
-        required: false
-        type: string
-        description: "The release tag of Apptainer to install"
-        default: "latest"
+inputs:
+  apptainer_download_url:
+    required: false
+    type: string
+    description: "The download URL for the Apptainer package"
+    default: ""
+  apptainer_version:
+    required: false
+    type: string
+    description: "The version of Apptainer to install"
+    default: ""
+  apptainer_arch:
+    required: false
+    type: string
+    default: ""
+    description: "The architecture of Apptainer to install"
+  apptainer_release_tag:
+    required: false
+    type: string
+    description: "The release tag of Apptainer to install"
+    default: "latest"
 
-jobs:
-  install_apptainer:
-    runs-on: ubuntu-latest
+runs:
+    using: composite
     steps:  
       - name: Install Apptainer
         shell: bash
@@ -55,4 +52,4 @@ jobs:
           sudo apt-get clean --yes --quiet
           sudo rm -rf /var/lib/apt/lists/*
 
-          printf "Installed "; apptainer --version
+          printf "Installed "; apptainer --versversionion
