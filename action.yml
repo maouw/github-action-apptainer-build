@@ -32,7 +32,7 @@ runs:
           if [ -z "${download_url:-}" ]; then
             [ -z "${release_arch:-}" ] && release_arch="$(dpkg --print-architecture)"
             releases_url="https://api.github.com/repos/apptainer/apptainer/releases/tags/${{inputs.apptainer_release_tag}}"
-            download_url="$(curl -ssL "${releases_url}" | grep -o -m1 'https://github[.]com.*download[/].*apptainer_.*${{inputs.apptainer_release_arch}}.deb')"
+            download_url="$(curl -ssL "${releases_url}" | grep -o -m1 'https://github[.]com.*download[/].*apptainer_.*${release_arch:-}.deb')"
           fi
 
           [ -z "${download_url:-}" ] && { echo "Unable to determine download URL for Apptainer"; exit 1; }
