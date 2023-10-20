@@ -28,7 +28,7 @@ runs:
           if [ -z "${download_url:-}" ]; then
             [ -z "${release_arch:-}" ] && release_arch="$(dpkg --print-architecture)"
             release_index=latest
-            [ -n "${{inputs.apptainer_release:-}}" ] && release_index="tags/${{inputs.apptainer_release}}"
+            [ -n "${{inputs.apptainer_release:}}" ] && release_index="tags/${{inputs.apptainer_release}}"
             releases_url="https://api.github.com/repos/apptainer/apptainer/releases/${release_index}"
             download_url="$(curl -ssL "${releases_url}" | grep -o -m1 'https://github[.]com.*download[/].*apptainer_.*'"${release_arch:-}"'.deb')"
           fi
