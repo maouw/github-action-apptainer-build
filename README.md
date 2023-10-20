@@ -1,2 +1,3 @@
-# github-action-apptainer-build
-GitHub Action to build Apptainer images
+# github-action-apptainer-install
+
+GitHub Action to install Apptainer
